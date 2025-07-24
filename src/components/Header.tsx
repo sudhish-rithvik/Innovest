@@ -6,16 +6,13 @@ import innovest from '../img/innovest.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 10);
+      setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -23,12 +20,27 @@ const Header = () => {
   const navItems = [
     { name: 'Home', href: '#home' },
     { name: 'About Us', href: '#about' },
-    { name: 'Events', href: '#events', hasDropdown: true },
-    { name: 'Speakers', href: '#speakers' },
+    { name: 'Events', href: '#events' },
     { name: 'Schedule', href: '#schedule' },
-    { name: 'Registration', href: '#registration' },
+    { name: 'Speakers', href: '#speakers' },
+    { name: 'Registration', href: '#2024' },
     { name: 'Contact', href: '#contact' },
   ];
+
+  // Smooth scroll
+  const handleNavClick = (e, href) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const id = href.replace("#", "");
+      const section = document.getElementById(id);
+      if (section) {
+        // Offset for fixed header
+        const yOffset = -80;
+        const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+  };
 
   return (
     <header className={`fixed w-full top-0 z-50 transition-all duration-300 ${
@@ -40,34 +52,23 @@ const Header = () => {
         <div className="flex justify-between items-center py-2">
           {/* Logo */}
           <div className="flex items-center space-x-4 relative -left-4">
-            <img 
-              src={citLogo} 
-              alt="CIT Logo" 
-              className="h-10 w-auto object-contain"
-            />
+            <img src={citLogo} alt="CIT Logo" className="h-10 w-auto object-contain"/>
             <div className="relative h-14 flex items-center">
-              <img 
-                src={citbifLogo} 
-                alt="CITBIF Logo" 
-                className="h-14 w-auto object-contain scale-[1.5] translate-y-0"
-              />
+              <img src={citbifLogo} alt="CITBIF Logo" className="h-14 w-auto object-contain scale-[1.5] translate-y-0"/>
             </div>
             <div className="relative h-14 flex items-center">
-              <img 
-                src={innovest} 
-                alt="Innovest Logo" 
-                className="h-14 w-auto object-contain scale-[0.7] translate-y-0"
-              />
+              <img src={innovest} alt="Innovest Logo" className="h-14 w-auto object-contain scale-[0.7] translate-y-0"/>
             </div>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop navigation */}
           <nav className="hidden md:flex space-x-8">
             {navItems.map((item) => (
               <div key={item.name} className="relative">
                 <a
                   href={item.href}
                   className="text-gray-700 hover:text-blue-900 px-3 py-2 text-sm font-medium transition-colors duration-200 flex items-center"
+                  onClick={e => handleNavClick(e, item.href)}
                   onMouseEnter={() => item.hasDropdown && setActiveDropdown(item.name)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
@@ -98,7 +99,10 @@ const Header = () => {
                   key={item.name}
                   href={item.href}
                   className="text-gray-700 hover:text-blue-900 block px-3 py-2 text-base font-medium"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={e => {
+                    handleNavClick(e, item.href);
+                    setIsMenuOpen(false);
+                  }}
                 >
                   {item.name}
                 </a>
