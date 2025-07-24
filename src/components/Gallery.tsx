@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 const galleryImages = [
   { src: "/innovest.png", alt: "Event Moment 1" },
   { src: "/innovest.png", alt: "Event Moment 2" },
-  { src: "innovest.png", alt: "Event Moment 3" },
-  { src: "innovest.pg", alt: "Event Moment 4" }
+  { src: "/innovest.png", alt: "Event Moment 3" },
+  { src: "/innovest.png", alt: "Event Moment 4" }
 
   // ... more images ...
 ];
